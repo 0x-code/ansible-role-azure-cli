@@ -1,0 +1,25 @@
+- name: Install packages
+  become: yes
+  package: 
+    name: "{{ item }}"
+    state: present
+  loop:
+    - ca-certificates 
+    - apt-transport-https 
+
+- name: Add an Apt signing key to a specific keyring file
+  become: yes
+  apt_key:
+    #id: 9FED2BCBDCD29CDF762678CBAED4B06F473041FA
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    keyring: /etc/apt/trusted.gpg.d/microsoft.asc.gpg
+
+- apt_repository:
+    repo: deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ {{ ansible_distribution_release }} main
+    state: present
+
+- name: Install Azure CLI
+  become: yes
+  package: 
+    name: azure-cli
+    state: present
